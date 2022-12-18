@@ -373,6 +373,18 @@ cfg_if! {
                 enumerator.match_subsystem("tty")?;
                 let devices = enumerator.scan_devices()?;
                 for d in devices {
+                    if d.sysname().and_then(|n| n.to_str()) == Some("ttyACM0") {
+                        println!("driver = {:?}", d.driver());
+                        println!("devnode = {:?}", d.devnode());
+                        println!("Attributes:");
+                        for attribute in d.attributes() {
+                            println!("{:?} = {:?}", attribute.name(), attribute.value());
+                        }
+                        println!("Properties:");
+                        for prop in d.properties() {
+                            println!("{:?} = {:?}", prop.name(), prop.value());
+                        }
+                    }
                     if let Some(p) = d.parent() {
                         if let Some(devnode) = d.devnode() {
                             if let Some(path) = devnode.to_str() {
